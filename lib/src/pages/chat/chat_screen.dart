@@ -27,8 +27,8 @@ class ChatScreen extends StatelessWidget {
                 margin:
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Row(
-                  children: [
-                    const Text(
+                  children: const [
+                    Text(
                       'Discussions',
                       style: TextStyle(
                         fontSize: 24,
@@ -36,14 +36,8 @@ class ChatScreen extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const Spacer(),
-                    InkWell(
-                        onTap: () {
-                          Get.to(() => const ChatScreenSearch());
-                        },
-                        child: const Icon(CupertinoIcons.search,
-                            color: Colors.white)),
-                    const SizedBox(
+                    Spacer(),
+                    SizedBox(
                       width: 10,
                     ),
                   ],

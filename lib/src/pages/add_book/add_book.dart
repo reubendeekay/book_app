@@ -131,7 +131,6 @@ class _AddBookScreenState extends State<AddBookScreen> {
           const SizedBox(
             height: 30,
           ),
-          const Spacer(),
           SizedBox(
             height: 48,
             child: RaisedButton(
