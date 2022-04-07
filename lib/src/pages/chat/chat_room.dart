@@ -1,4 +1,5 @@
 import 'package:bookapp/constants.dart';
+import 'package:bookapp/src/models/discussion_tile_model.dart';
 import 'package:bookapp/src/models/message_model.dart';
 import 'package:bookapp/src/models/user_model.dart';
 import 'package:bookapp/src/pages/chat/add_message.dart';
@@ -9,17 +10,15 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ChatRoom extends StatelessWidget {
+  ChatRoom({Key? key, required this.discussion}) : super(key: key);
   static const routeName = '/chat-room';
+  final DiscussionTileModel discussion;
+
   final ScrollController _scrollController = ScrollController();
 
-  ChatRoom({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final chatRoomData =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    final UserModel user = chatRoomData['user'];
-    final chatRoomId = chatRoomData['chatRoomId'];
 
     build(BuildContext context) {
       WidgetsBinding.instance!.addPostFrameCallback((_) => _scrollController
@@ -43,7 +42,8 @@ class ChatRoom extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 21,
-              backgroundImage: CachedNetworkImageProvider(user.imageUrl!),
+              backgroundImage:
+                  CachedNetworkImageProvider(discussion.book!.imgUrl!),
             ),
             const SizedBox(
               width: 15,
@@ -56,7 +56,7 @@ class ChatRoom extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          user.fullName!,
+                          discussion.book!.name!,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: Theme.of(context).iconTheme.color),
@@ -65,40 +65,26 @@ class ChatRoom extends StatelessWidget {
                       const SizedBox(
                         width: 5,
                       ),
-                      if (user.isAdmin!)
-                        const Icon(
-                          Icons.verified,
-                          color: kPrimaryColor,
-                          size: 16,
-                        )
+                      // if (user.isAdmin!)
+                      //   const Icon(
+                      //     Icons.verified,
+                      //     color: kPrimaryColor,
+                      //     size: 16,
+                      //   )
                     ],
                   ),
-                  Text(
-                    user.isOnline! ? 'online' : 'offline',
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: user.isOnline! ? Colors.green : Colors.grey),
-                  ),
+                  // Text(
+                  //   ,
+                  //   overflow: TextOverflow.ellipsis,
+                  //   style: TextStyle(
+                  //       fontSize: 12,
+                  //       color: user.isOnline! ? Colors.green : Colors.grey),
+                  // ),
                 ],
               ),
             )
           ],
         ),
-        actions: [
-          IconButton(
-            splashRadius: 20,
-            constraints: const BoxConstraints(maxHeight: 10, minHeight: 10),
-            icon: const Icon(
-              Icons.call,
-              size: 20,
-            ),
-            onPressed: () {
-              launch('tel:${user.phoneNumber}');
-            },
-          ),
-          // moreVert()
-        ],
       ),
       body: SizedBox(
         width: size.width,
@@ -107,8 +93,8 @@ class ChatRoom extends StatelessWidget {
           children: [
             StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
-                    .collection('chats')
-                    .doc(chatRoomId)
+                    .collection('discussions')
+                    .doc(discussion.id!)
                     .collection('messages')
                     .orderBy('sentAt')
                     .snapshots(),
@@ -139,7 +125,7 @@ class ChatRoom extends StatelessWidget {
                   );
                 }),
             AddMessage(
-              userId: user.userId!,
+              userId: discussion.id!,
             ),
             const SizedBox(
               height: 6,

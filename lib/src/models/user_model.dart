@@ -6,8 +6,6 @@ class UserModel {
   final String? imageUrl;
   final double? balance;
 
-  final String? chatRoomId;
-
   bool? isAdmin;
   final bool? isOnline;
   final int? lastSeen;
@@ -23,7 +21,28 @@ class UserModel {
     this.balance,
     this.isOnline,
     this.lastSeen,
-    this.isAdmin,
-    this.chatRoomId,
   });
+
+  Map<String, dynamic> toJson() => {
+        'fullName': fullName,
+        'email': email,
+        'password': password,
+        'phoneNumber': phoneNumber,
+        'imageUrl': imageUrl,
+        'balance': balance,
+        'isOnline': isOnline,
+        'lastSeen': lastSeen,
+        'isAdmin': isAdmin,
+        'userId': userId,
+      };
+
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+        fullName: json['fullName'],
+        email: json['email'],
+        userId: json['userId'],
+        phoneNumber: json['phoneNumber'],
+        imageUrl: json['imageUrl'],
+        isOnline: json['isOnline'],
+        lastSeen: json['lastSeen'],
+      );
 }

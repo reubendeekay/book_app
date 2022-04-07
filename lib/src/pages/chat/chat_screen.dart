@@ -1,6 +1,9 @@
+import 'package:bookapp/screens/providers/book_provider.dart';
 import 'package:bookapp/screens/providers/chat_provider.dart';
-import 'package:bookapp/src/pages/chat/chat_screen_search.dart';
+import 'package:bookapp/src/models/discussion_tile_model.dart';
+import 'package:bookapp/src/pages/chat/create_discussion.dart';
 import 'package:bookapp/src/pages/chat/widgets/chat_tile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +30,8 @@ class ChatScreen extends StatelessWidget {
                 margin:
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                 child: Row(
-                  children: const [
-                    Text(
+                  children: [
+                    const Text(
                       'Discussions',
                       style: TextStyle(
                         fontSize: 24,
@@ -36,8 +39,19 @@ class ChatScreen extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    Spacer(),
-                    SizedBox(
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        Get.to(() => const CreateDiscussion());
+                      },
+                      child: Row(
+                        children: const [
+                          Text('Create'),
+                          Icon(Icons.add),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
                       width: 10,
                     ),
                   ],
@@ -69,37 +83,43 @@ class ChatScreenWidget extends StatelessWidget {
 
     final contacts = Provider.of<ChatProvider>(context).contactedUsers;
 
-    return ListView(
-      padding: const EdgeInsets.all(0),
-      children: [
-        ...List.generate(
-            contacts.length,
-            (index) => ChatTile(
-                  roomId: contacts[index].chatRoomId!,
-                  chatModel: contacts[index],
-                )),
-        if (contacts.isEmpty)
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'You have no unread messages',
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.pinkAccent,
-                      fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  'When you contact a other users or customer care, you will be able to see their messages here.',
-                  style: TextStyle(color: Colors.grey[400]),
-                ),
-              ],
-            ),
-          )
-      ],
-    );
+    return StreamBuilder<QuerySnapshot>(
+        stream: allBooksRef.snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'You have no unread messages',
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.pinkAccent,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    'When you contact a other users or customer care, you will be able to see their messages here.',
+                    style: TextStyle(color: Colors.grey[400]),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          List<DocumentSnapshot> docs = snapshot.data!.docs;
+          return ListView(
+            padding: const EdgeInsets.all(0),
+            children: [
+              ...List.generate(
+                  docs.length,
+                  (index) => ChatTile(
+                        discussion: DiscussionTileModel.fromJson(docs[index]),
+                      )),
+            ],
+          );
+        });
   }
 }

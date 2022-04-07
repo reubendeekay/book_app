@@ -72,7 +72,6 @@ class AuthProvider with ChangeNotifier {
       email: _currentUser['email'],
       phoneNumber: _currentUser['phoneNumber'],
       imageUrl: _currentUser['profilePic'],
-      isAdmin: _currentUser['isAdmin'],
       fullName: _currentUser['fullName'],
       userId: _currentUser['userId'],
       isOnline: _currentUser['isOnline'],

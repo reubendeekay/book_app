@@ -36,35 +36,39 @@ class BookTile extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    book.name!,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    book.description!,
-                    style: const TextStyle(color: Colors.grey),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    book.tags!.join(", "),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: true,
-                    style: const TextStyle(color: Colors.grey, fontSize: 14),
-                  )
-                ],
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      book.name!,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Expanded(
+                      child: Text(
+                        book.description!,
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      book.tags!.join(", "),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                    )
+                  ],
+                ),
               ),
             )
           ],

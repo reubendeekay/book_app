@@ -40,153 +40,27 @@ class ChatProvider with ChangeNotifier {
             .putFile(element);
         url = await fileData.ref.getDownloadURL();
       }).then((_) async {
-        final initiator = FirebaseFirestore.instance
-            .collection('chats')
-            .doc(uid + '_' + userId);
-        final receiver = FirebaseFirestore.instance
-            .collection('chats')
-            .doc(userId + '_' + uid);
+        final chatRoom =
+            FirebaseFirestore.instance.collection('discussions').doc(userId);
 
-        initiator.get().then((value) => {
-              if (value.exists)
-                {
-                  initiator.update({
-                    'latestMessage':
-                        message.message!.isNotEmpty ? message.message : 'photo',
-                    'sentAt': Timestamp.now(),
-                    'sentBy': uid,
-                  }),
-                  initiator.collection('messages').doc().set({
-                    'message':
-                        message.message!.isNotEmpty ? message.message : 'photo',
-                    'sender': uid,
-                    'to': userId,
-                    'media': url,
-                    'mediaType': message.mediaType,
-                    'isRead': false,
-                    'sentAt': Timestamp.now()
-                  })
-                }
-              else
-                {
-                  receiver.get().then((value) => {
-                        if (value.exists)
-                          {
-                            receiver.update({
-                              'latestMessage': message.message!.isNotEmpty
-                                  ? message.message
-                                  : 'photo',
-                              'sentAt': Timestamp.now(),
-                              'sentBy': uid,
-                            }),
-                            receiver.collection('messages').doc().set({
-                              'message': message.message!.isNotEmpty
-                                  ? message.message
-                                  : 'photo',
-                              'sender': uid,
-                              'to': userId,
-                              'media': url,
-                              'mediaType': message.mediaType,
-                              'isRead': false,
-                              'sentAt': Timestamp.now()
-                            })
-                          }
-                        else
-                          {
-                            initiator.set({
-                              'initiator': uid,
-                              'receiver': userId,
-                              'startedAt': Timestamp.now(),
-                              'latestMessage': message.message!.isNotEmpty
-                                  ? message.message
-                                  : '',
-                              'sentAt': Timestamp.now(),
-                              'sentBy': uid,
-                            }),
-                            initiator.collection('messages').doc().set({
-                              'message': message.message ?? '',
-                              'sender': uid,
-                              'to': userId,
-                              'media': url,
-                              'mediaType': message.mediaType,
-                              'isRead': false,
-                              'sentAt': Timestamp.now()
-                            }),
-                          }
-                      })
-                }
-            });
+        chatRoom.update({
+          'latestMessage':
+              message.message!.isNotEmpty ? message.message : 'photo',
+          'sentAt': Timestamp.now(),
+          'sentBy': uid,
+        });
+        chatRoom.collection('messages').doc().set({
+          'message': message.message!.isNotEmpty ? message.message : 'photo',
+          'sender': uid,
+          'to': userId,
+          'media': url,
+          'mediaType': message.mediaType,
+          'isRead': false,
+          'sentAt': Timestamp.now()
+        });
       });
-    } else {
-      final initiator = FirebaseFirestore.instance
-          .collection('chats')
-          .doc(uid + '_' + userId);
-      final receiver = FirebaseFirestore.instance
-          .collection('chats')
-          .doc(userId + '_' + uid);
-
-      initiator.get().then((value) => {
-            if (value.exists)
-              {
-                initiator.update({
-                  'latestMessage': message.message ?? 'photo',
-                  'sentAt': Timestamp.now(),
-                  'sentBy': uid,
-                }),
-                initiator.collection('messages').doc().set({
-                  'message': message.message ?? '',
-                  'sender': uid,
-                  'to': userId,
-                  'media': url,
-                  'mediaType': message.mediaType,
-                  'isRead': false,
-                  'sentAt': Timestamp.now()
-                })
-              }
-            else
-              {
-                receiver.get().then((value) => {
-                      if (value.exists)
-                        {
-                          receiver.update({
-                            'latestMessage': message.message ?? 'photo',
-                            'sentAt': Timestamp.now(),
-                            'sentBy': uid,
-                          }),
-                          receiver.collection('messages').doc().set({
-                            'message': message.message ?? '',
-                            'sender': uid,
-                            'to': userId,
-                            'media': url,
-                            'mediaType': message.mediaType,
-                            'isRead': false,
-                            'sentAt': Timestamp.now()
-                          })
-                        }
-                      else
-                        {
-                          initiator.set({
-                            'initiator': uid,
-                            'receiver': userId,
-                            'startedAt': Timestamp.now(),
-                            'latestMessage': message.message ?? '',
-                            'sentAt': Timestamp.now(),
-                            'sentBy': uid,
-                          }),
-                          initiator.collection('messages').doc().set({
-                            'message': message.message ?? '',
-                            'sender': uid,
-                            'media': url,
-                            'to': userId,
-                            'mediaType': message.mediaType,
-                            'isRead': false,
-                            'sentAt': Timestamp.now()
-                          }),
-                        }
-                    })
-              }
-          });
     }
+    notifyListeners();
   }
 
   //////////////////////////////////////////////////////
@@ -215,21 +89,18 @@ class ChatProvider with ChangeNotifier {
                 // print(value['username']),
                 if (value.exists)
                   {
-                    users.add(
-                      ChatTileModel(
-                          chatRoomId: element.id,
-                          latestMessageSenderId: element['sentBy'],
-                          user: UserModel(
-                              fullName: value['fullName'],
-                              imageUrl: value['profilePic'],
-                              userId: value['userId'],
-                              phoneNumber: value['phoneNumber'],
-                              lastSeen: value['lastSeen'],
-                              isOnline: value['isOnline'],
-                              isAdmin: value['isAdmin']),
-                          latestMessage: element['latestMessage'],
-                          time: element['sentAt']),
-                    ),
+                    users.add(ChatTileModel(
+                      chatRoomId: element.id,
+                      latestMessageSenderId: element['sentBy'],
+                      user: UserModel(
+                        fullName: value['fullName'],
+                        imageUrl: value['profilePic'],
+                        userId: value['userId'],
+                        phoneNumber: value['phoneNumber'],
+                        lastSeen: value['lastSeen'],
+                        isOnline: value['isOnline'],
+                      ),
+                    )),
                   }
               });
     });
@@ -245,19 +116,18 @@ class ChatProvider with ChangeNotifier {
                   {
                     users.add(
                       ChatTileModel(
-                          chatRoomId: element.id,
-                          latestMessageSenderId: element['sentBy'],
-                          user: UserModel(
-                              fullName: value['fullName'],
-                              imageUrl: value['profilePic'],
-                              userId: value['userId'],
-                              phoneNumber: value['phoneNumber'],
-                              lastSeen: value['lastSeen'],
-                              isOnline: value['isOnline'],
-                              isAdmin: value['isAdmin']),
-                          latestMessage: element['latestMessage'],
-                          time: element['sentAt']),
-                    ),
+                        chatRoomId: element.id,
+                        latestMessageSenderId: element['sentBy'],
+                        user: UserModel(
+                          fullName: value['fullName'],
+                          imageUrl: value['profilePic'],
+                          userId: value['userId'],
+                          phoneNumber: value['phoneNumber'],
+                          lastSeen: value['lastSeen'],
+                          isOnline: value['isOnline'],
+                        ),
+                      ),
+                    )
                   }
               });
     });
@@ -285,13 +155,13 @@ class ChatProvider with ChangeNotifier {
                 .contains(searchTerm.toLowerCase()))
         .forEach((e) {
       users.add(UserModel(
-          fullName: e['fullName'],
-          imageUrl: e['profilePic'],
-          userId: e['userId'],
-          phoneNumber: e['phoneNumber'],
-          lastSeen: e['lastSeen'],
-          isOnline: e['isOnline'],
-          isAdmin: e['isAdmin']));
+        fullName: e['fullName'],
+        imageUrl: e['profilePic'],
+        userId: e['userId'],
+        phoneNumber: e['phoneNumber'],
+        lastSeen: e['lastSeen'],
+        isOnline: e['isOnline'],
+      ));
     });
     print(users.length);
 
