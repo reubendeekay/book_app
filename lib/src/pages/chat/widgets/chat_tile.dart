@@ -47,7 +47,7 @@ class ChatTile extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          discussion.book!.name!,
+                          discussion.title!,
                           style: const TextStyle(
                               color: Colors.white,
                               fontSize: 18,

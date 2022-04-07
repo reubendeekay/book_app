@@ -56,7 +56,7 @@ class ChatRoom extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          discussion.book!.name!,
+                          discussion.title!,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: Theme.of(context).iconTheme.color),
@@ -73,13 +73,18 @@ class ChatRoom extends StatelessWidget {
                       //   )
                     ],
                   ),
-                  // Text(
-                  //   ,
-                  //   overflow: TextOverflow.ellipsis,
-                  //   style: TextStyle(
-                  //       fontSize: 12,
-                  //       color: user.isOnline! ? Colors.green : Colors.grey),
-                  // ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          discussion.description!,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              const TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             )

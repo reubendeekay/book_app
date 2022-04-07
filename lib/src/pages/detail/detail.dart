@@ -1,6 +1,8 @@
 import 'package:bookapp/constants.dart';
 import 'package:bookapp/screens/helpers/cached_image.dart';
+import 'package:bookapp/screens/providers/book_provider.dart';
 import 'package:bookapp/screens/providers/payment_provider.dart';
+import 'package:bookapp/src/pages/add_book/edit_book.dart';
 import 'package:bookapp/src/pages/detail/purchase_book_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bookapp/src/models/book_model.dart';
@@ -15,6 +17,7 @@ class DetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -212,37 +215,47 @@ class DetailPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildEvelatedButton(
-                      Icons.add,
-                      "Borrow",
-                      book.retailType != 'buy'
-                          ? const Color(0xFF6741FF)
-                          : Colors.grey.shade800, () {
-                    if (book.retailType != 'buy') {
-                      Provider.of<PaymentProvider>(context, listen: false)
-                          .initiliasePrice(double.parse(book.price!));
-                      Get.to(() => PurchaseBookScreen(
+                  if (uid != book.ownerId)
+                    _buildEvelatedButton(
+                        Icons.add,
+                        "Borrow",
+                        book.retailType != 'buy'
+                            ? const Color(0xFF6741FF)
+                            : Colors.grey.shade800, () {
+                      if (book.retailType != 'buy') {
+                        Provider.of<PaymentProvider>(context, listen: false)
+                            .initiliasePrice(double.parse(book.price!));
+                        Get.to(() => PurchaseBookScreen(
+                              book: book,
+                            ));
+                      }
+                    }),
+                  if (uid != book.ownerId)
+                    const SizedBox(
+                      width: 15,
+                    ),
+                  if (uid != book.ownerId)
+                    _buildEvelatedButton(
+                        Icons.sell,
+                        "Buy",
+                        book.retailType == 'buy'
+                            ? const Color(0xFF6741FF)
+                            : Colors.grey.shade800, () {
+                      if (book.retailType == 'buy') {
+                        Provider.of<PaymentProvider>(context, listen: false)
+                            .initiliasePrice(double.parse(book.price!));
+                        Get.to(() => PurchaseBookScreen(
+                              book: book,
+                            ));
+                      }
+                    }),
+                  if (uid == book.ownerId)
+                    _buildEvelatedButton(
+                        Icons.sell, "Edit Book", const Color(0xFF6741FF), () {
+                      Get.to(() => EditBookScreen(
                             book: book,
                           ));
-                    }
-                  }),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  _buildEvelatedButton(
-                      Icons.sell,
-                      "Buy",
-                      book.retailType == 'buy'
-                          ? const Color(0xFF6741FF)
-                          : Colors.grey.shade800, () {
-                    if (book.retailType == 'buy') {
-                      Provider.of<PaymentProvider>(context, listen: false)
-                          .initiliasePrice(double.parse(book.price!));
-                      Get.to(() => PurchaseBookScreen(
-                            book: book,
-                          ));
-                    }
-                  }),
+                    }),
                 ],
               ))
         ],

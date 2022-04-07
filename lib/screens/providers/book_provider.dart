@@ -15,6 +15,10 @@ class BookProvider with ChangeNotifier {
     await allBooksRef.add(book.toJson());
   }
 
+  Future<void> updateBook(BookModel book, UserModel user) async {
+    await allBooksRef.doc(book.id).update(book.toJson());
+  }
+
   Future<void> purchaseBook(BookModel book) async {
     purchasedBooksRef.add({
       ...book.toJson(),
@@ -22,7 +26,8 @@ class BookProvider with ChangeNotifier {
     });
   }
 
-  Future<void> createDiscussion(BookModel book, UserModel user) async {
+  Future<void> createDiscussion(
+      BookModel book, UserModel user, String title, String description) async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     final results = await allDiscussionsRef.doc(book.id).get();
     if (!results.exists) {
@@ -37,6 +42,8 @@ class BookProvider with ChangeNotifier {
         'latestMessage': 'Created Discussion',
         'sentAt': Timestamp.now(),
         'sentBy': uid,
+        'title': title,
+        'description': description,
       });
     }
   }
