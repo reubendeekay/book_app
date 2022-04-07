@@ -1,4 +1,5 @@
 import 'package:bookapp/src/models/book_model.dart';
+import 'package:bookapp/src/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
@@ -10,18 +11,8 @@ final purchasedBooksRef =
     FirebaseFirestore.instance.collection('userData/$uid/purchasedBooks');
 
 class BookProvider with ChangeNotifier {
-  Future<void> addBook(BookModel book) async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
+  Future<void> addBook(BookModel book, UserModel user) async {
     await allBooksRef.add(book.toJson());
-    await allDiscussionsRef.doc(book.id).set({
-      'book': book.toJson(),
-      'initiator': uid,
-      'creator': uid,
-      'startedAt': Timestamp.now(),
-      'latestMessage': 'Created Discussion',
-      'sentAt': Timestamp.now(),
-      'sentBy': uid,
-    });
   }
 
   Future<void> purchaseBook(BookModel book) async {
@@ -31,7 +22,7 @@ class BookProvider with ChangeNotifier {
     });
   }
 
-  Future<void> createDiscussion(BookModel book) async {
+  Future<void> createDiscussion(BookModel book, UserModel user) async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     final results = await allDiscussionsRef.doc(book.id).get();
     if (!results.exists) {
@@ -39,6 +30,9 @@ class BookProvider with ChangeNotifier {
         'book': book.toJson(),
         'initiator': uid,
         'creator': uid,
+        'users': [
+          user.toJson(),
+        ],
         'startedAt': Timestamp.now(),
         'latestMessage': 'Created Discussion',
         'sentAt': Timestamp.now(),

@@ -184,7 +184,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
                       name: bookTitle,
                       tags: tags!.split(','));
                   await Provider.of<BookProvider>(context, listen: false)
-                      .addBook(book);
+                      .addBook(book, user);
                   Navigator.of(context).pop();
 
                   ScaffoldMessenger.of(context).showSnackBar(

@@ -79,12 +79,8 @@ class ChatScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ChatProvider>(context).getChats();
-
-    final contacts = Provider.of<ChatProvider>(context).contactedUsers;
-
     return StreamBuilder<QuerySnapshot>(
-        stream: allBooksRef.snapshots(),
+        stream: allDiscussionsRef.snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Container(
@@ -93,7 +89,7 @@ class ChatScreenWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'You have no unread messages',
+                    'There are no discussion groups',
                     style: TextStyle(
                         fontSize: 18,
                         color: Colors.pinkAccent,
@@ -101,7 +97,7 @@ class ChatScreenWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    'When you contact a other users or customer care, you will be able to see their messages here.',
+                    'When you join a discussion group or contact customer customer care, you will be able to see their messages here.',
                     style: TextStyle(color: Colors.grey[400]),
                   ),
                 ],

@@ -29,7 +29,7 @@ class ChatRoom extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: kPrimaryColor.withOpacity(0.6),
         elevation: 2,
         automaticallyImplyLeading: false,
         leading: IconButton(

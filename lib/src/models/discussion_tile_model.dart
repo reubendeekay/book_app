@@ -6,17 +6,20 @@ class DiscussionTileModel {
   List<UserModel>? users;
   final String? id;
   final String? latestMessage;
+  final String? sender;
 
-  DiscussionTileModel({this.book, this.id, this.latestMessage, this.users});
+  DiscussionTileModel(
+      {this.book, this.id, this.latestMessage, this.users, this.sender});
 
   factory DiscussionTileModel.fromJson(dynamic json) {
     return DiscussionTileModel(
-      book: json['book'] != null ? BookModel.fromJson(json['book']) : null,
-      id: json['id'],
+      book: BookModel.fromMap(json['book']),
+      id: json.id,
       latestMessage: json['latestMessage'],
       users: json['users'] != null
           ? (json['users'] as List).map((i) => UserModel.fromJson(i)).toList()
           : null,
+      sender: json['sentBy'],
     );
   }
 }

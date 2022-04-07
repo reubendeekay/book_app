@@ -1,3 +1,4 @@
+import 'package:bookapp/screens/providers/auth_provider.dart';
 import 'package:bookapp/screens/providers/book_provider.dart';
 import 'package:bookapp/src/models/book_model.dart';
 import 'package:bookapp/src/pages/home/widget/book_tile.dart';
@@ -10,6 +11,7 @@ class CreateDiscussion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<AuthProvider>(context, listen: false).user;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Discussion'),
@@ -43,8 +45,8 @@ class CreateDiscussion extends StatelessWidget {
                                   await Provider.of<BookProvider>(context,
                                           listen: false)
                                       .createDiscussion(
-                                    BookModel.fromJson(docs[index]),
-                                  );
+                                          BookModel.fromJson(docs[index]),
+                                          user);
                                   Navigator.of(context).pop();
 
                                   ScaffoldMessenger.of(context).showSnackBar(

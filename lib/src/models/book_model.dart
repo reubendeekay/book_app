@@ -56,6 +56,20 @@ class BookModel {
         name: json['name'],
       );
 
+  factory BookModel.fromMap(dynamic json) => BookModel(
+        author: json['author'],
+        description: json['description'],
+        price: json['price'],
+        review: json['review'],
+        ownerId: json['ownerId'],
+        ownerName: json['ownerName'],
+        tags: json['tags'],
+        view: json['view'],
+        retailType: json['retailType'],
+        imgUrl: json['imgUrl'],
+        name: json['name'],
+      );
+
   static List<BookModel> generateHeaderList() {
     return [
       BookModel(

@@ -24,15 +24,12 @@ class ChatTileModel {
 }
 
 class ChatProvider with ChangeNotifier {
-  List<ChatTileModel> _contactedUsers = [];
-
-  List<ChatTileModel> get contactedUsers => [..._contactedUsers];
-
   /////////////////SEND MESSAGE////////////////////////
-  Future<void> sendMessage(String userId, MessageModel message) async {
+  Future<void> sendMessage(String bookId, MessageModel message) async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     String url = '';
-
+    final chatRoom =
+        FirebaseFirestore.instance.collection('discussions').doc(bookId);
     if (message.mediaFiles!.isNotEmpty) {
       await Future.forEach(message.mediaFiles!, (File element) async {
         final fileData = await FirebaseStorage.instance
@@ -41,100 +38,43 @@ class ChatProvider with ChangeNotifier {
         url = await fileData.ref.getDownloadURL();
       }).then((_) async {
         final chatRoom =
-            FirebaseFirestore.instance.collection('discussions').doc(userId);
+            FirebaseFirestore.instance.collection('discussions').doc(bookId);
 
-        chatRoom.update({
+        await chatRoom.update({
           'latestMessage':
               message.message!.isNotEmpty ? message.message : 'photo',
           'sentAt': Timestamp.now(),
           'sentBy': uid,
         });
-        chatRoom.collection('messages').doc().set({
+        print(chatRoom.path);
+        await chatRoom.collection('messages').doc().set({
           'message': message.message!.isNotEmpty ? message.message : 'photo',
           'sender': uid,
-          'to': userId,
+          'to': bookId,
           'media': url,
           'mediaType': message.mediaType,
           'isRead': false,
           'sentAt': Timestamp.now()
         });
       });
+    } else {
+      chatRoom.update({
+        'latestMessage': message.message ?? 'photo',
+        'sentAt': Timestamp.now(),
+        'sentBy': uid,
+      });
+      chatRoom.collection('messages').doc().set({
+        'message': message.message ?? '',
+        'sender': uid,
+        'to': bookId,
+        'media': url,
+        'mediaType': message.mediaType,
+        'isRead': false,
+        'sentAt': Timestamp.now()
+      });
     }
-    notifyListeners();
-  }
 
-  //////////////////////////////////////////////////////
-  ///
-  ///
-  Future<void> getChats() async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    List<ChatTileModel> users = [];
-
-    final initiatorChats = await FirebaseFirestore.instance
-        .collection('chats')
-        .where('initiator', isEqualTo: uid)
-        .get();
-    final receiverChats = await FirebaseFirestore.instance
-        .collection('chats')
-        .where('receiver', isEqualTo: uid)
-        .get();
-
-    await Future.forEach(initiatorChats.docs,
-        (QueryDocumentSnapshot element) async {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(element['receiver'])
-          .get()
-          .then((value) => {
-                // print(value['username']),
-                if (value.exists)
-                  {
-                    users.add(ChatTileModel(
-                      chatRoomId: element.id,
-                      latestMessageSenderId: element['sentBy'],
-                      user: UserModel(
-                        fullName: value['fullName'],
-                        imageUrl: value['profilePic'],
-                        userId: value['userId'],
-                        phoneNumber: value['phoneNumber'],
-                        lastSeen: value['lastSeen'],
-                        isOnline: value['isOnline'],
-                      ),
-                    )),
-                  }
-              });
-    });
-
-    await Future.forEach(receiverChats.docs,
-        (QueryDocumentSnapshot element) async {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(element['initiator'])
-          .get()
-          .then((value) => {
-                if (value.exists)
-                  {
-                    users.add(
-                      ChatTileModel(
-                        chatRoomId: element.id,
-                        latestMessageSenderId: element['sentBy'],
-                        user: UserModel(
-                          fullName: value['fullName'],
-                          imageUrl: value['profilePic'],
-                          userId: value['userId'],
-                          phoneNumber: value['phoneNumber'],
-                          lastSeen: value['lastSeen'],
-                          isOnline: value['isOnline'],
-                        ),
-                      ),
-                    )
-                  }
-              });
-    });
-    users.sort((a, b) => b.time!.compareTo(a.time!));
-
-    _contactedUsers = users;
-
+    print('done');
     notifyListeners();
   }
 

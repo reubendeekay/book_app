@@ -67,11 +67,11 @@ class ChatTile extends StatelessWidget {
                         // )
                       ],
                     ),
-                    // Text(
-                    //   '${discussion == uid ? 'You: ' : ''}${discussion}',
-                    //   overflow: TextOverflow.ellipsis,
-                    //   style: const TextStyle(fontSize: 16, color: Colors.grey),
-                    // ),
+                    Text(
+                      '${discussion.sender == uid ? 'You: ' : ''}${discussion.latestMessage}',
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
                   ],
                 ),
               )
