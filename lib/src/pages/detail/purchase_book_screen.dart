@@ -157,13 +157,13 @@ class _PurchaseBookScreenState extends State<PurchaseBookScreen> {
                             isLoading = true;
                           });
                           try {
-                            // await depositMpesa(
-                            //   amount: widget.book.price!,
-                            //   phoneNumber: phoneNumber,
-                            // ).then((value) => Get.off(() => ThankYouPage(
-                            //       request: request,
-                            //     )));
-                            Get.off(ThankYouPage(request: request));
+                            await depositMpesa(
+                              amount: widget.book.price!,
+                              phoneNumber: phoneNumber,
+                            ).then((value) => Get.off(() => ThankYouPage(
+                                  request: request,
+                                )));
+                            // Get.off(ThankYouPage(request: request));
                           } catch (e) {
                             print(e);
 
