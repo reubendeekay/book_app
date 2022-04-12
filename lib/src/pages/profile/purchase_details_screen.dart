@@ -1,4 +1,5 @@
 import 'package:bookapp/constants.dart';
+import 'package:bookapp/screens/providers/book_provider.dart';
 import 'package:bookapp/src/models/request_model.dart';
 import 'package:bookapp/src/pages/home/widget/book_tile.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +26,12 @@ class PurchaseDetailsScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Customer Details',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  Text(
+                    uid == request.user!.userId!
+                        ? 'Your Payment Details'
+                        : 'Customer Details',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   const SizedBox(
                     height: 15,
@@ -41,21 +45,35 @@ class PurchaseDetailsScreen extends StatelessWidget {
               ),
             ),
           ]),
-          Positioned(
+          if (uid == request.user!.userId!)
+            Positioned(
               bottom: 15,
               left: 0,
               right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildEvelatedButton(Icons.sell, 'Confirm', Colors.green,
-                      () async {
-                    await FlutterPhoneDirectCaller.callNumber(
-                        request.user!.phoneNumber!);
-                  }),
-                  _buildEvelatedButton(Icons.call, 'Call', kPrimaryColor, () {})
-                ],
-              ))
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                _buildEvelatedButton(Icons.cancel, 'Close', kPrimaryColor, () {
+                  Navigator.of(context).pop();
+                }),
+              ]),
+            ),
+          if (uid == request.book!.ownerId!)
+            Positioned(
+                bottom: 15,
+                left: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildEvelatedButton(
+                        Icons.sell, 'Confirm', Colors.green, () async {}),
+                    _buildEvelatedButton(Icons.call, 'Call', kPrimaryColor,
+                        () async {
+                      await FlutterPhoneDirectCaller.callNumber(
+                          request.user!.phoneNumber!);
+                    })
+                  ],
+                ))
         ],
       ),
     );

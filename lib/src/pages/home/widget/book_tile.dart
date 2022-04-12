@@ -5,15 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 
 class BookTile extends StatelessWidget {
-  const BookTile({Key? key, required this.book}) : super(key: key);
+  const BookTile({Key? key, required this.book, this.isTappable = true})
+      : super(key: key);
   final BookModel book;
+  final bool isTappable;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Get.to(() => DetailPage(book: book));
-      },
+      onTap: isTappable
+          ? () {
+              Get.to(() => DetailPage(book: book));
+            }
+          : null,
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(

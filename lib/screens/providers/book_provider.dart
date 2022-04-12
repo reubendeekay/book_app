@@ -26,7 +26,7 @@ class BookProvider with ChangeNotifier {
   }
 
   Future<void> purchaseBook(RequestModel request) async {
-    final id = purchasedBooksRef.id;
+    final id = purchasedBooksRef.doc().id;
     await purchasedBooksRef.doc(id).set(request.toJson());
     await ownerBookRef
         .collection(request.book!.ownerId!)

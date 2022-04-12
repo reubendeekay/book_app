@@ -83,7 +83,7 @@ class DashboardTop extends StatelessWidget {
                 ),
                 DashboardTopOption(
                   color: Colors.brown,
-                  icon: Icons.local_mall_outlined,
+                  icon: Icons.sell_outlined,
                   title: 'Manage\nPurchases',
                   onTap: () => Get.to(() => const ManagePurchasesScreen()),
                 ),

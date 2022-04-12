@@ -1,8 +1,11 @@
 import 'package:bookapp/screens/providers/book_provider.dart';
 import 'package:bookapp/src/models/book_model.dart';
+import 'package:bookapp/src/models/request_model.dart';
 import 'package:bookapp/src/pages/home/widget/book_tile.dart';
+import 'package:bookapp/src/pages/profile/purchase_details_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PurchaseHistory extends StatelessWidget {
   const PurchaseHistory({Key? key}) : super(key: key);
@@ -28,8 +31,18 @@ class PurchaseHistory extends StatelessWidget {
           return ListView(
             children: List.generate(
               docs.length,
-              (index) => BookTile(
-                book: BookModel.fromJson(docs[index]),
+              (index) => InkWell(
+                onTap: () {
+                  Get.to(() => PurchaseDetailsScreen(
+                      request: RequestModel.fromJson(docs[index])));
+                },
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  child: BookTile(
+                    isTappable: false,
+                    book: BookModel.fromMap(docs[index]['book']),
+                  ),
+                ),
               ),
             ),
           );
