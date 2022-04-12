@@ -7,10 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:intl/intl.dart';
 import 'dart:ui' as ui;
+import 'dart:math' as math;
 
 class ChatBubble extends StatelessWidget {
   final MessageModel message;
-  ChatBubble(this.message, {Key? key}) : super(key: key);
+  final String ownerId;
+  ChatBubble(this.message, this.ownerId, {Key? key}) : super(key: key);
+  final color =
+      Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
 
   final uid = FirebaseAuth.instance.currentUser!.uid;
   @override
@@ -29,14 +33,14 @@ class ChatBubble extends StatelessWidget {
             child: ClipRRect(
               borderRadius: uid == message.senderId
                   ? const BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      bottomLeft: Radius.circular(15),
-                      bottomRight: Radius.circular(15),
+                      topLeft: Radius.circular(12),
+                      bottomLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(12),
                     )
                   : const BorderRadius.only(
-                      bottomLeft: Radius.circular(15),
-                      topRight: Radius.circular(15),
-                      bottomRight: Radius.circular(15),
+                      bottomLeft: Radius.circular(12),
+                      topRight: Radius.circular(12),
+                      bottomRight: Radius.circular(12),
                     ),
               child: BubbleBackground(
                 colors: myColors
@@ -48,17 +52,44 @@ class ChatBubble extends StatelessWidget {
                     color: Colors.white,
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 8),
                     child: Stack(
                       children: [
                         Container(
                           margin: const EdgeInsets.fromLTRB(0, 0, 40, 10),
-                          child: Text(
-                            message.message!,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                message.fullName ?? 'User',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: color),
+                              ),
+                              const SizedBox(
+                                height: 2,
+                              ),
+                              Text(
+                                message.message!,
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 15),
+                              ),
+                            ],
                           ),
                         ),
+                        if (message.senderId == ownerId)
+                          const Positioned(
+                            top: 2,
+                            right: 0,
+                            child: Text(
+                              'Owner',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
                         Positioned(
                           bottom: 0,
                           right: 0,

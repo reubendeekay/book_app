@@ -1,19 +1,34 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:bookapp/constants.dart';
+import 'package:bookapp/screens/providers/book_provider.dart';
+import 'package:bookapp/src/models/request_model.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
 class ThankYouPage extends StatefulWidget {
-  const ThankYouPage({
-    Key? key,
-  }) : super(key: key);
+  const ThankYouPage({Key? key, required this.request}) : super(key: key);
+  final RequestModel request;
 
   @override
   State<ThankYouPage> createState() => _ThankYouPageState();
 }
 
 class _ThankYouPageState extends State<ThankYouPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await Provider.of<BookProvider>(context, listen: false)
+          .purchaseBook(widget.request);
+
+      Future.delayed(Duration(seconds: 5), () {
+        Navigator.of(context).pop();
+      });
+    });
+  }
+
   double screenWidth = 600;
   double screenHeight = 400;
   Color textColor = const Color(0xFF32567A);
@@ -67,7 +82,6 @@ class _ThankYouPageState extends State<ThankYouPage> {
               Text(
                 "Payment done Successfully",
                 style: TextStyle(
-                  color: Colors.black87,
                   fontWeight: FontWeight.w400,
                   fontSize: 17,
                 ),
@@ -77,7 +91,7 @@ class _ThankYouPageState extends State<ThankYouPage> {
                 "You will be redirected to the home page shortly\nor click here to return to home page",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Colors.black54,
+                  color: Colors.grey,
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
                 ),

@@ -25,7 +25,7 @@ class BookTile extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: Hero(
-                tag: book.id!,
+                tag: book.id ?? '1',
                 child: SizedBox(
                   height: 120,
                   child: cachedImage(

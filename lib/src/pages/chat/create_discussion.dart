@@ -113,31 +113,36 @@ class _CreateDiscussionState extends State<CreateDiscussion> {
                     child: isLoading
                         ? const MyLoader()
                         : const Text('Create Group'),
-                    onPressed: () async {
-                      setState(() {
-                        isLoading = true;
-                      });
+                    onPressed: title != null &&
+                            description != null &&
+                            selectedBook != null
+                        ? () async {
+                            setState(() {
+                              isLoading = true;
+                            });
 
-                      try {
-                        await Provider.of<BookProvider>(context, listen: false)
-                            .createDiscussion(
-                                selectedBook!, user, title!, description!);
-                        setState(() {
-                          isLoading = false;
-                        });
-                        Navigator.of(context).pop();
+                            try {
+                              await Provider.of<BookProvider>(context,
+                                      listen: false)
+                                  .createDiscussion(selectedBook!, user, title!,
+                                      description!);
+                              setState(() {
+                                isLoading = false;
+                              });
+                              Navigator.of(context).pop();
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Discussion created'),
-                          ),
-                        );
-                      } catch (e) {
-                        setState(() {
-                          isLoading = false;
-                        });
-                      }
-                    },
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Discussion created'),
+                                ),
+                              );
+                            } catch (e) {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          }
+                        : null,
                   ),
                 ))
           ],

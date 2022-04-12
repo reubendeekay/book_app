@@ -1,5 +1,6 @@
 import 'package:bookapp/screens/providers/auth_provider.dart';
 import 'package:bookapp/src/pages/add_book/add_book.dart';
+import 'package:bookapp/src/pages/profile/manage_purchases.dart';
 import 'package:bookapp/src/pages/profile/purchase_history.dart';
 import 'package:bookapp/src/pages/profile/widgets/edit_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -84,7 +85,7 @@ class DashboardTop extends StatelessWidget {
                   color: Colors.brown,
                   icon: Icons.local_mall_outlined,
                   title: 'Manage\nPurchases',
-                  onTap: () => Get.to(() => const PurchaseHistory()),
+                  onTap: () => Get.to(() => const ManagePurchasesScreen()),
                 ),
                 DashboardTopOption(
                   color: Colors.blue,

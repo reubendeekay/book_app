@@ -1,17 +1,9 @@
-import 'package:bookapp/constants.dart';
-import 'package:bookapp/screens/providers/chat_provider.dart';
-import 'package:bookapp/src/models/book_model.dart';
 import 'package:bookapp/src/models/discussion_tile_model.dart';
-import 'package:bookapp/src/models/user_model.dart';
 import 'package:bookapp/src/pages/chat/chat_room.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
-
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class ChatTile extends StatelessWidget {
   ChatTile({Key? key, required this.discussion}) : super(key: key);
@@ -25,7 +17,10 @@ class ChatTile extends StatelessWidget {
         //   'chatRoomId': roomId,
         //   'user': book,
         // });
-        Get.to(() => ChatRoom(discussion: discussion));
+        Get.to(() => ChatRoom(
+              discussion: discussion,
+              ownerId: discussion.users!.first.userId,
+            ));
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),

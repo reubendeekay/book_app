@@ -1,5 +1,6 @@
 import 'package:bookapp/screens/providers/auth_provider.dart';
 import 'package:bookapp/src/pages/chat/chat_screen.dart';
+import 'package:bookapp/src/pages/notifications/notifications_screen.dart';
 import 'package:bookapp/src/pages/profile/user_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Home(settingsController: widget.settingsController),
             const ChatScreen(),
+            const NotificationsScreen(),
             UserProfile(settingsController: widget.settingsController)
           ]),
       bottomNavigationBar: _buildBottonBar(),
@@ -62,6 +64,8 @@ class _HomePageState extends State<HomePage> {
               label: 'Home', icon: Icon(Icons.home_rounded)),
           BottomNavigationBarItem(
               label: 'Book', icon: Icon(Icons.menu_book_rounded)),
+          BottomNavigationBarItem(
+              label: 'Notifications', icon: Icon(Icons.notifications)),
           BottomNavigationBarItem(
               label: 'User Profile', icon: Icon(Icons.person_outline)),
         ]);

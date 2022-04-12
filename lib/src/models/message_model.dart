@@ -7,6 +7,7 @@ class MessageModel {
   final String? receiverId;
   final Timestamp? sentAt;
   final String? message;
+  final String? fullName;
   final String? mediaUrl;
   final List<File>? mediaFiles;
   final String? mediaType;
@@ -16,6 +17,7 @@ class MessageModel {
     this.senderId,
     this.receiverId,
     this.sentAt,
+    this.fullName,
     this.message,
     this.mediaUrl,
     this.mediaFiles,

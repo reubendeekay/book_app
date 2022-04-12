@@ -1,5 +1,11 @@
+import 'dart:io';
+
 import 'package:bookapp/constants.dart';
+import 'package:bookapp/screens/helpers/my_image_picker.dart';
+import 'package:bookapp/screens/helpers/my_loader.dart';
+import 'package:bookapp/screens/helpers/my_shimmer.dart';
 import 'package:bookapp/screens/providers/auth_provider.dart';
+import 'package:bookapp/src/models/user_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -32,6 +38,7 @@ class _EditProfileState extends State<EditProfile> {
   String postal = '';
 
   final _formKey = GlobalKey<FormState>();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -192,37 +199,6 @@ class _EditProfileState extends State<EditProfile> {
                           )),
                     ),
                   ),
-
-                  //////////////////////////////
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 10),
-                    child: TextFormField(
-                      // controller: controller,
-                      validator: (val) {
-                        return null;
-                      },
-                      onSaved: (val) {
-                        setState(() {
-                          postal = val!;
-                        });
-                      },
-                      initialValue: 'Adress not set',
-                      onChanged: (val) {
-                        setState(() {
-                          postal = val;
-                        });
-                      },
-                      decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 15),
-                          labelText: 'Postal Address',
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(5),
-                          )),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -235,14 +211,44 @@ class _EditProfileState extends State<EditProfile> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
-                onPressed: () async {},
+                onPressed: () async {
+                  final userData = UserModel(
+                      userId: user.userId,
+                      email: email.isNotEmpty ? email : user.email,
+                      phoneNumber: phoneNumber.isNotEmpty
+                          ? phoneNumber
+                          : user.phoneNumber,
+                      fullName: fullName.isNotEmpty ? fullName : user.fullName);
+                  setState(() {
+                    isLoading = true;
+                  });
+
+                  try {
+                    await Provider.of<AuthProvider>(context, listen: false)
+                        .updateProfile(userData);
+                    setState(() {
+                      isLoading = false;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('User details updated successfully')));
+                  } catch (e) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Failed to update user details')));
+                  }
+                },
                 color: kPrimaryColor,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 60.0, vertical: 15),
-                  child: Text(
-                    'Save Changes',
-                    style: TextStyle(color: Colors.white),
-                  ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 60.0, vertical: 15),
+                  child: isLoading
+                      ? const MyLoader()
+                      : const Text(
+                          'Save Changes',
+                          style: TextStyle(color: Colors.white),
+                        ),
                 ),
               ),
             ),
@@ -264,6 +270,8 @@ class UserPicture extends StatefulWidget {
 class _UserPictureState extends State<UserPicture> {
   // List<Media> mediaList = [];
   final ScrollController scrollController = ScrollController();
+  File? imageFile;
+  bool isUploading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -278,31 +286,61 @@ class _UserPictureState extends State<UserPicture> {
           Container(
               height: 120,
               width: 120,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
+              decoration: const BoxDecoration(
+                  color: Colors.white,
                   shape: BoxShape.circle,
-                  boxShadow: const [
+                  boxShadow: [
                     BoxShadow(
                       color: Colors.black12,
                       blurRadius: 10,
                       offset: Offset(0, 10),
                     )
                   ])),
-          Center(
-            child: CircleAvatar(
-              radius: 50,
-              backgroundImage: CachedNetworkImageProvider(user.imageUrl!),
-            ),
-          ),
+          isUploading
+              ? const Center(
+                  child: MyShimmer(
+                  child: CircleAvatar(
+                    radius: 50,
+                  ),
+                ))
+              : Center(
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: CachedNetworkImageProvider(user.imageUrl!),
+                  ),
+                ),
           Positioned(
             right: -10,
             bottom: -2,
             child: GestureDetector(
-              // onTap: () => openImagePicker(context),
+              onTap: () => openImagePicker(context, (val) async {
+                setState(() {
+                  imageFile = val;
+                });
+
+                if (imageFile != null) {
+                  setState(() {
+                    isUploading = true;
+                  });
+                  try {
+                    await Provider.of<AuthProvider>(context, listen: false)
+                        .updateProfilePic(imageFile!);
+                    setState(() {
+                      isUploading = false;
+                    });
+                  } catch (e) {
+                    setState(() {
+                      isUploading = false;
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Error while updating profile picture')));
+                  }
+                }
+              }),
               child: Container(
                 padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
                   shape: BoxShape.circle,
                 ),
                 child: const CircleAvatar(

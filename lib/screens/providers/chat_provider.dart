@@ -54,7 +54,8 @@ class ChatProvider with ChangeNotifier {
           'media': url,
           'mediaType': message.mediaType,
           'isRead': false,
-          'sentAt': Timestamp.now()
+          'sentAt': Timestamp.now(),
+          'name': message.fullName,
         });
       });
     } else {
@@ -70,7 +71,8 @@ class ChatProvider with ChangeNotifier {
         'media': url,
         'mediaType': message.mediaType,
         'isRead': false,
-        'sentAt': Timestamp.now()
+        'sentAt': Timestamp.now(),
+        'name': message.fullName,
       });
     }
 

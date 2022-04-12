@@ -1,18 +1,24 @@
 import 'package:bookapp/constants.dart';
+import 'package:bookapp/screens/providers/book_provider.dart';
 import 'package:bookapp/src/models/discussion_tile_model.dart';
 import 'package:bookapp/src/models/message_model.dart';
 import 'package:bookapp/src/models/user_model.dart';
 import 'package:bookapp/src/pages/chat/add_message.dart';
+import 'package:bookapp/src/pages/chat/chat_details_screen.dart';
 import 'package:bookapp/src/pages/chat/widgets/chat_bubble.dart';
+import 'package:bookapp/src/pages/chat/widgets/fullscreen_image.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ChatRoom extends StatelessWidget {
-  ChatRoom({Key? key, required this.discussion}) : super(key: key);
+  ChatRoom({Key? key, required this.discussion, this.ownerId})
+      : super(key: key);
   static const routeName = '/chat-room';
   final DiscussionTileModel discussion;
+  final String? ownerId;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -37,58 +43,69 @@ class ChatRoom extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         leadingWidth: 25,
-        title: Row(
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CircleAvatar(
-              radius: 21,
-              backgroundImage:
-                  CachedNetworkImageProvider(discussion.book!.imgUrl!),
-            ),
-            const SizedBox(
-              width: 15,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          discussion.title!,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              color: Theme.of(context).iconTheme.color),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 5,
-                      ),
-                      // if (user.isAdmin!)
-                      //   const Icon(
-                      //     Icons.verified,
-                      //     color: kPrimaryColor,
-                      //     size: 16,
-                      //   )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          discussion.description!,
-                          overflow: TextOverflow.ellipsis,
-                          style:
-                              const TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+        title: GestureDetector(
+          onTap: () {
+            Get.to(() => ChatDetailsScreen(discussion: discussion));
+          },
+          child: Row(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Get.to(
+                      () => FullscreenImage(image: discussion.book!.imgUrl!));
+                },
+                child: CircleAvatar(
+                  radius: 21,
+                  backgroundImage:
+                      CachedNetworkImageProvider(discussion.book!.imgUrl!),
+                ),
               ),
-            )
-          ],
+              const SizedBox(
+                width: 15,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            discussion.title!,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Theme.of(context).iconTheme.color),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        // if (user.isAdmin!)
+                        //   const Icon(
+                        //     Icons.verified,
+                        //     color: kPrimaryColor,
+                        //     size: 16,
+                        //   )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            discussion.description!,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontSize: 12, color: Colors.grey),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
       body: SizedBox(
@@ -117,14 +134,52 @@ class ChatRoom extends StatelessWidget {
                         final message = snapshot.data!.docs[index];
 
                         build(context);
-                        return ChatBubble(MessageModel(
-                          message: message['message'],
-                          isRead: message['isRead'],
-                          sentAt: message['sentAt'],
-                          senderId: message['sender'],
-                          mediaType: message['mediaType'],
-                          mediaUrl: message['media'],
-                        ));
+                        return uid == ownerId
+                            ? Dismissible(
+                                key: Key(message['sentAt'].toString()),
+                                direction: uid != message['sender']
+                                    ? DismissDirection.startToEnd
+                                    : DismissDirection.endToStart,
+                                background: Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 7.5),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  color: Colors.red,
+                                  child: const Icon(
+                                    Icons.delete,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
+                                  alignment: uid != message['sender']
+                                      ? Alignment.centerLeft
+                                      : Alignment.centerRight,
+                                ),
+                                child: ChatBubble(
+                                  MessageModel(
+                                    message: message['message'],
+                                    isRead: message['isRead'],
+                                    sentAt: message['sentAt'],
+                                    senderId: message['sender'],
+                                    mediaType: message['mediaType'],
+                                    mediaUrl: message['media'],
+                                    fullName: message['name'] ?? 'User',
+                                  ),
+                                  ownerId!,
+                                ),
+                              )
+                            : ChatBubble(
+                                MessageModel(
+                                  message: message['message'],
+                                  isRead: message['isRead'],
+                                  sentAt: message['sentAt'],
+                                  senderId: message['sender'],
+                                  mediaType: message['mediaType'],
+                                  mediaUrl: message['media'],
+                                  fullName: message['name'] ?? 'User',
+                                ),
+                                ownerId!,
+                              );
                       },
                     ),
                   );
