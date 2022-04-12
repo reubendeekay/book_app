@@ -32,6 +32,13 @@ class BookProvider with ChangeNotifier {
         .collection(request.book!.ownerId!)
         .doc(id)
         .set(request.toJson());
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(request.book!.ownerId!)
+        .update({
+      'balance': FieldValue.increment(double.parse(request.book!.price!)),
+    });
     await userNotifications.add({
       'message':
           '${request.book!.name} has been purchased. Wait for the owner to confirm and call.',

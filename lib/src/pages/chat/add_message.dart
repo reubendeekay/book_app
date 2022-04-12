@@ -1,4 +1,5 @@
 import 'package:bookapp/constants.dart';
+import 'package:bookapp/screens/providers/auth_provider.dart';
 import 'package:bookapp/screens/providers/chat_provider.dart';
 import 'package:bookapp/src/models/message_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,6 +31,8 @@ class _AddMessageState extends State<AddMessage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final fullName =
+        Provider.of<AuthProvider>(context, listen: false).user.fullName;
 
     return SizedBox(
       width: size.width,
@@ -44,7 +47,7 @@ class _AddMessageState extends State<AddMessage> {
               child: TextField(
                 controller: messageController,
                 maxLines: null,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 15, vertical: 15),
@@ -72,6 +75,7 @@ class _AddMessageState extends State<AddMessage> {
                     MessageModel(
                       mediaFiles: [],
                       mediaType: '',
+                      fullName: fullName,
                       message: messageController.text,
                       senderId: FirebaseAuth.instance.currentUser!.uid,
                       receiverId: widget.userId,

@@ -65,8 +65,13 @@ class PurchaseDetailsScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildEvelatedButton(
-                        Icons.sell, 'Confirm', Colors.green, () async {}),
+                    _buildEvelatedButton(Icons.sell, 'Confirm', Colors.green,
+                        () async {
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Confirmed'),
+                      ));
+                    }),
                     _buildEvelatedButton(Icons.call, 'Call', kPrimaryColor,
                         () async {
                       await FlutterPhoneDirectCaller.callNumber(

@@ -85,6 +85,7 @@ class ChatBubble extends StatelessWidget {
                             child: Text(
                               'Owner',
                               style: TextStyle(
+                                fontStyle: FontStyle.italic,
                                 color: Colors.white,
                                 fontSize: 11,
                               ),

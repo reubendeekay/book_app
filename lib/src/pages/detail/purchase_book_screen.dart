@@ -141,35 +141,37 @@ class _PurchaseBookScreenState extends State<PurchaseBookScreen> {
                 height: 48,
                 width: double.infinity,
                 child: RaisedButton(
-                  onPressed: () async {
-                    final request = RequestModel(
-                      book: widget.book,
-                      phoneNumber: phoneNumber,
-                      user: user,
-                      address: address,
-                      instructions: instructions,
-                      purchasedAt: Timestamp.now(),
-                    );
+                  onPressed: phoneNumber == null || address == null
+                      ? null
+                      : () async {
+                          final request = RequestModel(
+                            book: widget.book,
+                            phoneNumber: phoneNumber,
+                            user: user,
+                            address: address,
+                            instructions: instructions ?? '',
+                            purchasedAt: Timestamp.now(),
+                          );
 
-                    setState(() {
-                      isLoading = true;
-                    });
-                    try {
-                      // await depositMpesa(
-                      //   amount: widget.book.price!,
-                      //   phoneNumber: phoneNumber,
-                      // ).then((value) => Get.off(() => ThankYouPage(
-                      //       request: request,
-                      //     )));
-                      Get.off(ThankYouPage(request: request));
-                    } catch (e) {
-                      print(e);
+                          setState(() {
+                            isLoading = true;
+                          });
+                          try {
+                            // await depositMpesa(
+                            //   amount: widget.book.price!,
+                            //   phoneNumber: phoneNumber,
+                            // ).then((value) => Get.off(() => ThankYouPage(
+                            //       request: request,
+                            //     )));
+                            Get.off(ThankYouPage(request: request));
+                          } catch (e) {
+                            print(e);
 
-                      setState(() {
-                        isLoading = false;
-                      });
-                    }
-                  },
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        },
                   color: kPrimaryColor,
                   child: isLoading ? const MyLoader() : const Text('Pay'),
                 ),
