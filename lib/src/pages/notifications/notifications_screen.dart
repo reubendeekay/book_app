@@ -31,8 +31,30 @@ class NotificationsScreen extends StatelessWidget {
               return ListView(
                 children: List.generate(
                     docs.length,
-                    (index) => NotificationsTile(
-                        notification: NotificationModel.fromJson(docs[index]))),
+                    (index) => Dismissible(
+                          onDismissed: (val) {
+                            FirebaseFirestore.instance
+                                .collection('userData')
+                                .doc(uid)
+                                .collection('notifications')
+                                .doc(docs[index].id)
+                                .delete();
+                          },
+                          direction: DismissDirection.endToStart,
+                          key: Key(docs[index].id),
+                          background: Container(
+                            color: Colors.red,
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                            alignment: Alignment.centerRight,
+                          ),
+                          child: NotificationsTile(
+                              notification:
+                                  NotificationModel.fromJson(docs[index])),
+                        )),
               );
             }
           }),

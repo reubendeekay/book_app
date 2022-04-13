@@ -156,10 +156,18 @@ class _PurchaseBookScreenState extends State<PurchaseBookScreen> {
                           setState(() {
                             isLoading = true;
                           });
+
+                          String getPhone() {
+                            if (phoneNumber!.length > 10) {
+                              return phoneNumber!;
+                            }
+                            return phoneNumber!.replaceRange(0, 1, '254');
+                          }
+
                           try {
                             await depositMpesa(
                               amount: widget.book.price!,
-                              phoneNumber: phoneNumber,
+                              phoneNumber: getPhone(),
                             ).then((value) => Get.off(() => ThankYouPage(
                                   request: request,
                                 )));

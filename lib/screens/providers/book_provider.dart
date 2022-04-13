@@ -25,6 +25,10 @@ class BookProvider with ChangeNotifier {
     await allBooksRef.doc(book.id).update(book.toJson());
   }
 
+  Future<void> deleteBook(BookModel book) async {
+    await allBooksRef.doc(book.id).delete();
+  }
+
   Future<void> purchaseBook(RequestModel request) async {
     final id = purchasedBooksRef.doc().id;
     await purchasedBooksRef.doc(id).set(request.toJson());

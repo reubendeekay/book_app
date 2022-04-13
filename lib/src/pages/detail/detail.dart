@@ -256,6 +256,20 @@ class DetailPage extends StatelessWidget {
                             book: book,
                           ));
                     }),
+                  if (uid == book.ownerId)
+                    const SizedBox(
+                      width: 15,
+                    ),
+                  if (uid == book.ownerId)
+                    _buildEvelatedButton(
+                        Icons.delete, "Delete Book", Colors.red, () async {
+                      await Provider.of<BookProvider>(context, listen: false)
+                          .deleteBook(
+                        book,
+                      );
+
+                      Navigator.of(context).pop();
+                    }),
                 ],
               ))
         ],
