@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mpesa/mpesa.dart';
 
 Mpesa mpesa = Mpesa(
-  clientKey: "sWuAK847VPnXJLdxlyGuFzWlL1AIhoGW",
-  clientSecret: "0suB4AxiNV8hGVqX",
+  clientKey: "w0sP3rGGfdTVDcpuAk4ADect3pFARVNU",
+  clientSecret: "6hPJz5IEtxfv1X4E",
   passKey:
-      "53beb23ef8b57ee44ef9b74349847a2909bbc169227e434067f36a711f2681a9".trim(),
-  environment: "production",
+      "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919".trim(),
+  environment: "sandbox",
 );
 
 Future<void> depositMpesa({
@@ -17,9 +17,9 @@ Future<void> depositMpesa({
       .lipaNaMpesa(
         phoneNumber: phoneNumber!,
         amount: double.parse(amount!),
-        businessShortCode: "4086809",
+        businessShortCode: "174379",
         accountReference: phoneNumber.replaceRange(0, 1, ''),
-        callbackUrl: 'https://facebook.com',
+        callbackUrl: 'https://example.com',
       )
       .then((result) async {})
       .catchError((error) {

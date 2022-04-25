@@ -30,7 +30,7 @@ class RequestModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'book': book?.toJson(),
+        'book': book?.toMap(),
         'phoneNumber': phoneNumber,
         'address': address,
         'instructions': instructions,

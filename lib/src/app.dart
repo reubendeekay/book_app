@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
         animation: settingsController,
         builder: (BuildContext context, Widget? child) {
           return GetMaterialApp(
+            title: 'Book App',
             scrollBehavior: MyCustomScrollBehavior(),
             debugShowCheckedModeBanner: false,
             // Providing a restorationScopeId allows the Navigator built by the
@@ -79,6 +80,7 @@ class MyApp extends StatelessWidget {
             theme: Themes.lightTheme,
             darkTheme: Themes.datkTheme,
             themeMode: settingsController.themeMode,
+
             home: StreamBuilder(
                 stream: FirebaseAuth.instance.authStateChanges(),
                 builder: (ctx, snapshot) => snapshot.hasData

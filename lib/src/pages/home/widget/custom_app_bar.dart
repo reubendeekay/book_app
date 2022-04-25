@@ -1,10 +1,19 @@
+import 'package:bookapp/src/pages/add_book/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bookapp/src/settings/settings_controller.dart';
+import 'package:get/route_manager.dart';
 
-class CustomAppBar extends StatelessWidget {
+class CustomAppBar extends StatefulWidget {
   const CustomAppBar({Key? key, required this.settingsController})
       : super(key: key);
   final SettingsController settingsController;
+
+  @override
+  State<CustomAppBar> createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
+  String? searchText;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +22,23 @@ class CustomAppBar extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-              child: TextField(
+              child: TextFormField(
+            onChanged: (val) {
+              setState(() {
+                searchText = val;
+              });
+            },
+            onEditingComplete: () {
+              Get.to(() => SearchScreen(
+                    searchText: searchText,
+                  ));
+            },
+            onFieldSubmitted: (val) {
+              Get.to(() => SearchScreen(
+                    searchText: val,
+                  ));
+            },
+            textInputAction: TextInputAction.search,
             decoration: InputDecoration(
                 filled: true,
                 fillColor: Theme.of(context).colorScheme.secondary,
@@ -26,12 +51,12 @@ class CustomAppBar extends StatelessWidget {
           )),
           IconButton(
             onPressed: () {
-              settingsController.updateThemeMode(
-                  settingsController.themeMode == ThemeMode.light
+              widget.settingsController.updateThemeMode(
+                  widget.settingsController.themeMode == ThemeMode.light
                       ? ThemeMode.dark
                       : ThemeMode.light);
             },
-            icon: Icon(settingsController.themeMode == ThemeMode.light
+            icon: Icon(widget.settingsController.themeMode == ThemeMode.light
                 ? Icons.dark_mode_rounded
                 : Icons.light_mode_rounded),
           )

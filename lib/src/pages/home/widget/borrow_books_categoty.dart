@@ -10,9 +10,9 @@ import 'package:bookapp/src/pages/home/widget/category_title.dart';
 import 'package:bookapp/src/settings/settings_controller.dart';
 
 class BorrowBooksCategory extends StatelessWidget {
-  BorrowBooksCategory({Key? key, required this.settingsController})
+  const BorrowBooksCategory({Key? key, required this.settingsController})
       : super(key: key);
-  final List<BookModel> booksRecommendedList = BookModel.generateCategoryList();
+
   final SettingsController settingsController;
   @override
   Widget build(BuildContext context) {

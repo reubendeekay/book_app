@@ -1,4 +1,5 @@
 import 'package:bookapp/constants.dart';
+import 'package:bookapp/screens/helpers/calendar_popup.dart';
 import 'package:bookapp/screens/helpers/lipa_na_mpesa.dart';
 import 'package:bookapp/screens/helpers/my_loader.dart';
 import 'package:bookapp/screens/providers/auth_provider.dart';
@@ -23,6 +24,8 @@ class PurchaseBookScreen extends StatefulWidget {
 class _PurchaseBookScreenState extends State<PurchaseBookScreen> {
   String? phoneNumber, address, instructions;
   bool isLoading = false;
+  DateTime? startDate = DateTime.now();
+  DateTime? endDate = DateTime.now().add(const Duration(days: 1));
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +46,38 @@ class _PurchaseBookScreenState extends State<PurchaseBookScreen> {
             child: Column(
               children: [
                 BookTile(book: widget.book),
+                if (widget.book.retailType == 'borrow')
+                  Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 10),
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (ctx) => CalendarPopupView(
+                                    initialStartDate: startDate,
+                                    initialEndDate: startDate,
+                                    onApplyClick: (val1, val2) {
+                                      setState(() {
+                                        startDate = val1;
+                                        endDate = val2;
+                                      });
+                                    },
+                                  ));
+                        },
+                        child: Row(
+                          children: const [
+                            Text(
+                              'Select Borrow time',
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                            ),
+                            Spacer(),
+                            Icon(Icons.date_range)
+                          ],
+                        ),
+                      )),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 5),

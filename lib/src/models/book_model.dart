@@ -7,7 +7,7 @@ class BookModel {
   String? retailType;
   String? price;
   String? review;
-  String? view;
+  int? view;
   String? ownerName;
   List? tags;
   String? description;
@@ -41,6 +41,21 @@ class BookModel {
         'view': view,
       };
 
+  Map<String, dynamic> toMap() => {
+        'imgUrl': imgUrl,
+        'id': id,
+        'name': name,
+        'author': author,
+        'price': price,
+        'ownerName': ownerName,
+        'ownerId': ownerId,
+        'description': description,
+        'review': review,
+        'retailType': retailType,
+        'tags': tags,
+        'view': view,
+      };
+
   factory BookModel.fromJson(dynamic json) => BookModel(
         id: json.id,
         author: json['author'],
@@ -58,6 +73,7 @@ class BookModel {
 
   factory BookModel.fromMap(dynamic json) => BookModel(
         author: json['author'],
+        id: json['id'],
         description: json['description'],
         price: json['price'],
         review: json['review'],
@@ -79,7 +95,7 @@ class BookModel {
         description: "Let's not be jackals",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -95,7 +111,7 @@ class BookModel {
             "Let's not be jackalsLet's not be jackalsLet's not be jLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jaLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jaLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jaLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jaLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jaLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jaLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jaLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jaackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackalsLet's not be jackals",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -110,7 +126,7 @@ class BookModel {
         description: "Let's not be jackals",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -125,7 +141,7 @@ class BookModel {
         description: "Let's not be jackals",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -145,7 +161,7 @@ class BookModel {
         description: "Be Happy",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -160,7 +176,7 @@ class BookModel {
         description: "Be Happy",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -175,7 +191,7 @@ class BookModel {
         description: "Be Happy",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -190,7 +206,7 @@ class BookModel {
         description: "Be Happy",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -205,7 +221,7 @@ class BookModel {
         description: "Be Happy",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -225,7 +241,7 @@ class BookModel {
         description: "Be Happy",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -240,7 +256,7 @@ class BookModel {
         description: "Be Happy",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -255,7 +271,7 @@ class BookModel {
         description: "Be Happy",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -270,7 +286,7 @@ class BookModel {
         description: "Be Happy",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",
@@ -285,7 +301,7 @@ class BookModel {
         description: "Be Happy",
         review: "126",
         price: "4.7",
-        view: "124470",
+        view: 1,
         tags: [
           "Academic",
           "To know",

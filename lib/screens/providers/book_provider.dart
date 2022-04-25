@@ -17,6 +17,9 @@ final userNotifications =
 final bookOwnerNotification = FirebaseFirestore.instance.collection('userData');
 
 class BookProvider with ChangeNotifier {
+  List<RequestModel> _books = [];
+  List<RequestModel> get books => [..._books];
+
   Future<void> addBook(BookModel book, UserModel user) async {
     await allBooksRef.add(book.toJson());
   }
@@ -25,8 +28,46 @@ class BookProvider with ChangeNotifier {
     await allBooksRef.doc(book.id).update(book.toJson());
   }
 
+  Future<void> addView(String bookId) async {
+    await allBooksRef.doc(bookId).update({
+      'view': FieldValue.increment(1),
+    });
+  }
+
   Future<void> deleteBook(BookModel book) async {
+    final results = await FirebaseFirestore.instance.collection('users').get();
+    print('RESULTS ' + results.docs.toString());
+    await Future.wait(results.docs.map((result) async {
+      final userBooks = await FirebaseFirestore.instance
+          .collection('userData')
+          .doc(result.id)
+          .collection('purchasedBooks')
+          .get();
+
+      final wantedBooks = userBooks.docs.where(
+        (element) => element['book']['id'] == book.id,
+      );
+
+      if (wantedBooks.isNotEmpty) {
+        await Future.wait(wantedBooks.map((e) => FirebaseFirestore.instance
+            .collection('userData')
+            .doc(result.id)
+            .collection('purchasedBooks')
+            .doc(e.id)
+            .delete()));
+      }
+    }));
+
+    final admin = await FirebaseFirestore.instance
+        .collection('userData/requests/$uid')
+        .get();
+
+    final adminBook =
+        admin.docs.firstWhere((element) => element['book']['id'] == book.id);
+    await adminBook.reference.delete();
     await allBooksRef.doc(book.id).delete();
+
+    notifyListeners();
   }
 
   Future<void> purchaseBook(RequestModel request) async {
@@ -83,5 +124,38 @@ class BookProvider with ChangeNotifier {
         'description': description,
       });
     }
+  }
+
+  Future<void> getAllPurchasedBooks() async {
+    final results = await ownerBookRef.collection(uid).get();
+
+    _books =
+        results.docs.map((doc) => RequestModel.fromJson(doc.data())).toList();
+
+    notifyListeners();
+  }
+
+  Future<List<BookModel>> searchBook(String search) async {
+    final results = await allBooksRef.get();
+
+    final list = results.docs
+        .where((element) =>
+            element['name']
+                .toString()
+                .toLowerCase()
+                .contains(search.toLowerCase()) ||
+            element['author']
+                .toString()
+                .toLowerCase()
+                .contains(search.toLowerCase()) ||
+            element['description']
+                .toString()
+                .toLowerCase()
+                .contains(search.toLowerCase()) ||
+            element['tags'].contains(search.toLowerCase()))
+        .toList();
+
+    print(list.length);
+    return list.map((element) => BookModel.fromMap(element.data())).toList();
   }
 }

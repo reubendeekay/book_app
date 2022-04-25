@@ -1,8 +1,10 @@
 import 'package:bookapp/screens/helpers/cached_image.dart';
+import 'package:bookapp/screens/providers/book_provider.dart';
 import 'package:bookapp/src/models/book_model.dart';
 import 'package:bookapp/src/pages/detail/detail.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:provider/provider.dart';
 
 class BookCard extends StatelessWidget {
   const BookCard({Key? key, required this.book}) : super(key: key);
@@ -13,6 +15,8 @@ class BookCard extends StatelessWidget {
     final _size = MediaQuery.of(context).size;
     return GestureDetector(
       onTap: () {
+        Provider.of<BookProvider>(context, listen: false).addView(book.id!);
+
         Get.to(() => DetailPage(book: book));
       },
       child: Stack(

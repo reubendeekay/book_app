@@ -2,6 +2,7 @@ import 'package:bookapp/constants.dart';
 import 'package:bookapp/screens/providers/book_provider.dart';
 import 'package:bookapp/src/models/request_model.dart';
 import 'package:bookapp/src/pages/home/widget/book_tile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
@@ -67,6 +68,16 @@ class PurchaseDetailsScreen extends StatelessWidget {
                   children: [
                     _buildEvelatedButton(Icons.sell, 'Confirm', Colors.green,
                         () async {
+                      await FirebaseFirestore.instance
+                          .collection(
+                              'userData/${request.user!.userId!}/notifications')
+                          .add({
+                        'message':
+                            '${request.book!.name} has been confirmed to be delivered. Thank you for choosing us. Happy reading!.',
+                        'createdAt': Timestamp.now(),
+                        'id': request.book!.id,
+                        'imageUrl': request.book!.imgUrl,
+                      });
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text('Confirmed'),

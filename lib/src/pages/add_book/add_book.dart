@@ -31,6 +31,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
       appBar: AppBar(
         title: const Text('Add a Book'),
         elevation: 0,
+        backgroundColor: Colors.transparent,
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -179,7 +180,7 @@ class _AddBookScreenState extends State<AddBookScreen> {
                       ownerName: user.fullName,
                       retailType: retailType,
                       review: '0',
-                      view: '0',
+                      view: 0,
                       price: bookPrice,
                       name: bookTitle,
                       tags: tags!.split(','));

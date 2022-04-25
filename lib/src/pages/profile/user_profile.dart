@@ -21,6 +21,8 @@ class UserProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AuthProvider>(context).user;
+    Provider.of<BookProvider>(context).getAllPurchasedBooks();
+
     return Scaffold(
       body: Stack(
         children: [

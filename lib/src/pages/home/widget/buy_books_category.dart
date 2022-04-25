@@ -11,7 +11,7 @@ class BuyBooks extends StatelessWidget {
   BuyBooks(
       {Key? key, required this.settingsController, this.isUserProfile = false})
       : super(key: key);
-  final List<BookModel> moviesTrendingList = BookModel.generateItemsList();
+
   final SettingsController settingsController;
   bool isUserProfile;
   @override
